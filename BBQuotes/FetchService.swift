@@ -9,7 +9,7 @@ import Foundation
 
 struct FetchService {
     enum FetchError: Error {
-        case badResponnse // the server doesn't give us the right data
+        case badResponse // the server doesn't give us the right data
     }
     
     let baseURL = URL(string: "https://breaking-bad-api-six.vercel.app/api")!
@@ -22,11 +22,18 @@ struct FetchService {
         let fetchURL = quoteURL.appending(queryItems: [URLQueryItem(name: "production", value: show)])
         
         // try and fetch the data from the url
+        let (data, response) = try await URLSession.shared.data(from: fetchURL)
         
         // deal with the response from the server
+        // we are asking if the response is the response from an online server, which is HTTPURLResponse
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            throw FetchError.badResponse
+        }
         
         // if the response is good, decode the data and put it in quote model
+        let quote = try JSONDecoder().decode(Quote.self, from: data)
         
         // return the quote
+        return quote
     }
 }
