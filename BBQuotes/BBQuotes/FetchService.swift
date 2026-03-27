@@ -15,7 +15,7 @@ struct FetchService {
     
     private let baseURL = URL(string: "https://breaking-bad-api-six.vercel.app/api")!
     
-    //https://breaking-bad-api-six.vercel.app/api/quotes/random?production=Breaking+Bad
+    //"breaking-bad-api-six.vercel.app/api/quotes/random?production=Breaking+Bad"
     // ? is a query
     func fetchQuote(from show: String) async throws -> Quote {
         // build the fetch url
