@@ -1,5 +1,5 @@
 //
-//  QuoteView.swift
+//  FetchView.swift
 //  BBQuotes
 //
 //  Created by Gina on 24.02.26.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-struct QuoteView: View {
+struct FetchView: View {
     let vm = ViewModel()
     let show: String
     
@@ -28,9 +28,11 @@ struct QuoteView: View {
                         switch vm.status {
                         case .notStarted:
                             EmptyView()
+                            
                         case .fetching:
                             ProgressView()
-                        case .success:
+                            
+                        case .successQuote:
                             Text("\"\(vm.quote.quote)\"")
                                 .minimumScaleFactor(0.5) // scales the text down to up to 50%, but not smaller
                                 .multilineTextAlignment(.center)
@@ -61,28 +63,52 @@ struct QuoteView: View {
                             .onTapGesture {
                                 showCharacterInfo.toggle()
                             }
+                            
+                        case .successEpisode:
+                            EpisodeView(episode: vm.episode)
+                            
                         case .failed(let error):
                             Text(error.localizedDescription)
                         }
                         
                         
-                        Spacer()
+                        Spacer(minLength: 20)
                     }
                     
-                    Button {
-                        // btn action
-                        Task { // Task is a unit of async task that we can run in a sync environement like the UI view
-                            await vm.getQuoteData(for: show)
+                    HStack {
+                        Button {
+                            // btn action
+                            Task { // Task is a unit of async task that we can run in a sync environement like the UI view
+                                await vm.getQuoteData(for: show)
+                            }
+                        } label: {
+                            Text("Get Random Quote")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .padding()
+                                .background(Color("\(show.removeSpaces())Btn"))
+                                .clipShape(.rect(cornerRadius: 7))
+                                .shadow(color: Color("\(show.removeSpaces())Shadow"), radius: 3)
                         }
-                    } label: {
-                        Text("Get Random Quote")
-                            .font(.title)
-                            .foregroundStyle(.white)
-                            .padding()
-                            .background(Color("\(show.removeSpaces())Btn"))
-                            .clipShape(.rect(cornerRadius: 7))
-                            .shadow(color: Color("\(show.removeSpaces())Shadow"), radius: 3)
+                        
+                        Spacer()
+                        
+                        Button {
+                            // btn action
+                            Task { // Task is a unit of async task that we can run in a sync environement like the UI view
+                                await vm.getEpisode(for: show)
+                            }
+                        } label: {
+                            Text("Get Random Episode")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .padding()
+                                .background(Color("\(show.removeSpaces())Btn"))
+                                .clipShape(.rect(cornerRadius: 7))
+                                .shadow(color: Color("\(show.removeSpaces())Shadow"), radius: 3)
+                        }
                     }
+                    .padding(.horizontal, 30)
                     
                     Spacer(minLength: 95)
                 }
@@ -100,6 +126,6 @@ struct QuoteView: View {
 }
 
 #Preview {
-    QuoteView(show: Constants.bbName)
+    FetchView(show: Constants.bbName)
         .preferredColorScheme(.dark)
 }
