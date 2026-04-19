@@ -72,7 +72,7 @@ struct QuoteView: View {
                     Button {
                         // btn action
                         Task { // Task is a unit of async task that we can run in a sync environement like the UI view
-                            await vm.getData(for: show)
+                            await vm.getQuoteData(for: show)
                         }
                     } label: {
                         Text("Get Random Quote")
